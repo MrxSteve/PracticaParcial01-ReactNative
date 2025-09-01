@@ -9,7 +9,7 @@ import 'react-native-gesture-handler';
 
 import {
     DetailsScreen, HomeScreen, LibraryScreen,
-    LoginScreen,
+    LoginScreen, ProductListScreen,
     ProfileScreen, SearchScreen
 } from './src/screens';
 
@@ -76,6 +76,48 @@ function StackNavigator({ navigation }) {
     );
 }
 
+// Library Stack Navigator - Maneja la navegacion entre Library y ProductList
+function LibraryStackNavigator({ navigation }) {
+    return (
+        <Stack.Navigator
+            screenOptions={{
+                headerStyle: {
+                    backgroundColor: '#f8f9fa',
+                },
+                headerTintColor: '#333',
+                headerTitleStyle: {
+                    fontWeight: 'bold',
+                },
+            }}
+        >
+            <Stack.Screen 
+                name="LibraryMain" 
+                component={LibraryScreen}
+                options={{
+                    title: 'Biblioteca',
+                    headerLeft: () => openDrawer({ navigation })
+                }}
+            />
+            <Stack.Screen 
+                name="ProductList" 
+                component={ProductListScreen} 
+                options={{ 
+                    title: 'Lista de Productos',
+                    headerBackTitleVisible: false,
+                }} 
+            />
+            <Stack.Screen 
+                name="Details" 
+                component={DetailsScreen} 
+                options={{ 
+                    title: 'Detalle',
+                    headerBackTitleVisible: false,
+                }} 
+            />
+        </Stack.Navigator>
+    );
+}
+
 // Tab Navigator - Maneja las pestañas principales
 function TabNavigator({ navigation }) {
     return (
@@ -124,17 +166,10 @@ function TabNavigator({ navigation }) {
             />
             <Tab.Screen 
                 name="LibraryTab" 
-                component={LibraryScreen} 
+                component={LibraryStackNavigator} 
                 options={{
                     title: 'Biblioteca',
-                    headerLeft: () => openDrawer({ navigation }),
-                    headerStyle: {
-                        backgroundColor: '#f8f9fa',
-                    },
-                    headerTintColor: '#333',
-                    headerTitleStyle: {
-                        fontWeight: 'bold',
-                    },
+                    headerShown: false,
                     tabBarIcon: ({ color, size }) => (
                         <MaterialIcons name="library-music" color={color} size={size} />
                     ),

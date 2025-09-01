@@ -1,7 +1,25 @@
 import { FlatList, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { clothingProducts } from '../data/products';
 
-export default function HomeScreen({ navigation }) {
+export default function ProductListScreen({ route, navigation }) {
+    const { listType, title } = route.params || {};
+
+    // Función para obtener productos según el tipo de lista
+    const getProductsByType = (type) => {
+        switch (type) {
+            case 'myProducts':
+                return clothingProducts.slice(0, 3);
+            case 'wishlist':
+                return clothingProducts.slice(3, 6);
+            case 'cart':
+                return clothingProducts.slice(6, 9);
+            default:
+                return [];
+        }
+    };
+
+    const products = getProductsByType(listType);
+
     const renderProduct = ({ item }) => (
         <TouchableOpacity 
             style={styles.productCard}
@@ -25,16 +43,23 @@ export default function HomeScreen({ navigation }) {
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.container}>
-                <Text style={styles.title}>Tienda de Ropa</Text>
-                <Text style={styles.subtitle}>Descubre nuestra colección</Text>
+                <Text style={styles.title}>{title}</Text>
+                <Text style={styles.subtitle}>
+                    {products.length} {products.length === 1 ? 'producto' : 'productos'}
+                </Text>
                 
                 <FlatList
-                    data={clothingProducts}
+                    data={products}
                     renderItem={renderProduct}
                     keyExtractor={(item) => item.id.toString()}
                     numColumns={2}
                     contentContainerStyle={styles.productList}
                     showsVerticalScrollIndicator={false}
+                    ListEmptyComponent={
+                        <View style={styles.emptyContainer}>
+                            <Text style={styles.emptyText}>No hay productos en esta lista</Text>
+                        </View>
+                    }
                 />
             </View>
         </SafeAreaView>
@@ -122,5 +147,16 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         fontSize: 14,
         fontWeight: '600',
+    },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 50,
+    },
+    emptyText: {
+        fontSize: 16,
+        color: '#95a5a6',
+        textAlign: 'center',
     },
 });
